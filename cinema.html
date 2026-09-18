@@ -121,6 +121,11 @@
       repeating-linear-gradient(135deg, var(--panel-raised), var(--panel-raised) 10px, var(--panel) 10px, var(--panel) 20px);
   }
  
+  img.card-cover{
+    object-fit: cover;
+    filter: sepia(8%) saturate(105%);
+  }
+ 
   .card-body{ padding: 0.85rem 1rem 1rem; }
  
   .card-tag{
@@ -206,7 +211,15 @@
       repeating-linear-gradient(135deg, var(--panel-raised), var(--panel-raised) 12px, var(--panel) 12px, var(--panel) 24px);
   }
  
+  img.modal-cover{
+    width: 100%;
+    height: 260px;
+    object-fit: cover;
+    filter: sepia(8%) saturate(105%);
+  }
+ 
   .modal-body{ padding: 1.6rem 1.8rem 2rem; }
+ 
  
   .modal-breadcrumb{
     font-size: 0.75rem;
@@ -464,10 +477,18 @@
       card.className = 'card';
       card.addEventListener('click', () => openModal(f.id));
  
-      const cover = document.createElement('div');
-      cover.className = 'card-cover';
-      cover.textContent = initial(f.titre);
-      card.appendChild(cover);
+      if (f.image) {
+        const img = document.createElement('img');
+        img.className = 'card-cover';
+        img.src = f.image;
+        img.alt = f.titre;
+        card.appendChild(img);
+      } else {
+        const cover = document.createElement('div');
+        cover.className = 'card-cover';
+        cover.textContent = initial(f.titre);
+        card.appendChild(cover);
+      }
  
       const body = document.createElement('div');
       body.className = 'card-body';
@@ -485,7 +506,9 @@
     const f = FILMS.find(x => x.id === id);
     if (!f) return;
  
-    let html = '<div class="modal-cover">' + initial(f.titre) + '</div>';
+    let html = f.image
+      ? '<img class="modal-cover" src="' + f.image + '" alt="' + f.titre + '">'
+      : '<div class="modal-cover">' + initial(f.titre) + '</div>';
     html += '<div class="modal-body">';
     html += '<p class="modal-breadcrumb">' + f.realisateur + ' — ' + f.genre + '</p>';
     html += '<h2 class="modal-title">' + f.titre + '</h2>';
