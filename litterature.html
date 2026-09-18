@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Littérature — Atelier</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,500&family=Work+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #1B1512;
+    --panel: #241C17;
+    --panel-raised: #2E241D;
+    --ink: #F0E6D8;
+    --ink-soft: #D6C4AC;
+    --clay: #B5764A;
+    --clay-bright: #D99B6E;
+    --muted: #8C7458;
+    --rule: rgba(181,118,74,0.28);
+    --dim: #5C4E40;
+    --sage: #7E9C6E;
+    --radius: 10px;
+    --shadow: 0 14px 34px rgba(10,6,4,0.45);
+    --font-display: 'Cormorant Garamond', serif;
+    --font-body: 'Work Sans', sans-serif;
+  }
+ 
+  *{ box-sizing: border-box; }
+ 
+  html,body{
+    margin:0;
+    padding:0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--font-body);
+    -webkit-font-smoothing: antialiased;
+  }
+ 
+  body{
+    min-height:100vh;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    padding: clamp(2.5rem, 6vw, 5rem) clamp(1.25rem, 4vw, 2rem);
+  }
+ 
+  a{ color: inherit; }
+ 
+  .page{ width: 100%; max-width: 1080px; }
+ 
+  header.masthead{
+    text-align:center;
+    margin-bottom: clamp(2rem, 5vw, 3rem);
+  }
+ 
+  .kicker{
+    font-size: 0.8rem;
+    letter-spacing: 0.04em;
+    color: var(--muted);
+    margin: 0 0 0.6rem;
+  }
+  .kicker a{
+    text-decoration: none;
+    border-bottom: 1px solid rgba(140,116,88,0.4);
+  }
+  .kicker a:hover{ color: var(--clay-bright); border-bottom-color: var(--clay-bright); }
+ 
+  h1{
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: clamp(2.2rem, 5.2vw, 3.1rem);
+    margin: 0 0 0.9rem;
+    color: var(--ink);
+  }
+ 
+  .lede{
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 1.08rem;
+    color: var(--ink-soft);
+    max-width: 52ch;
+    margin: 0 auto;
+    line-height: 1.55;
+  }
+ 
+  .gallery{
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1.1rem;
+    margin-top: 2.2rem;
+  }
+ 
+  .card{
+    background: var(--panel);
+    border: 1px solid var(--rule);
+    border-radius: var(--radius);
+    overflow: hidden;
+    cursor: pointer;
+    transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+    display: flex;
+    flex-direction: column;
+  }
+  .card:hover{
+    transform: translateY(-3px);
+    box-shadow: var(--shadow);
+    border-color: rgba(217,155,110,0.55);
+  }
+ 
+  .card-cover{
+    width: 100%;
+    aspect-ratio: 3 / 4;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 2.6rem;
+    color: var(--dim);
+    background:
+      repeating-linear-gradient(135deg, var(--panel-raised), var(--panel-raised) 10px, var(--panel) 10px, var(--panel) 20px);
+  }
+ 
+  .card-body{ padding: 0.85rem 1rem 1rem; }
+ 
+  .card-tag{
+    font-size: 0.65rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--sage);
+    margin: 0 0 0.25rem;
+  }
+ 
+  .card-title{
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 1.15rem;
+    margin: 0 0 0.2rem;
+    color: var(--ink);
+    line-height: 1.25;
+  }
+ 
+  .card-terroir{
+    font-size: 0.78rem;
+    font-style: italic;
+    color: var(--muted);
+    margin: 0;
+  }
+ 
+  /* --- Modal --- */
+  .overlay{
+    position: fixed;
+    inset: 0;
+    background: rgba(10,6,4,0.78);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem 1rem;
+    z-index: 999;
+  }
+  .overlay.open{ display: flex; }
+ 
+  .modal{
+    position: relative;
+    width: 100%;
+    max-width: 560px;
+    max-height: 86vh;
+    overflow-y: auto;
+    background: var(--panel);
+    border: 1px solid var(--rule);
+    border-radius: 14px;
+    box-shadow: var(--shadow);
+  }
+ 
+  .modal-close{
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: rgba(0,0,0,0.4);
+    color: var(--ink);
+    border: none;
+    font-size: 1.1rem;
+    line-height: 1;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.15s ease, color 0.15s ease;
+    z-index: 2;
+  }
+  .modal-close:hover{ background: var(--clay-bright); color: var(--bg); }
+ 
+  .modal-cover{
+    height: 180px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 3.4rem;
+    color: var(--dim);
+    background:
+      repeating-linear-gradient(135deg, var(--panel-raised), var(--panel-raised) 12px, var(--panel) 12px, var(--panel) 24px);
+  }
+ 
+  .modal-body{ padding: 1.6rem 1.8rem 2rem; }
+ 
+  .modal-breadcrumb{
+    font-size: 0.75rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--sage);
+    margin: 0 0 0.5rem;
+  }
+ 
+  .modal-title{
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 1.8rem;
+    margin: 0 0 0.4rem;
+    color: var(--ink);
+  }
+ 
+  .modal-terroir{
+    font-size: 0.9rem;
+    font-style: italic;
+    color: var(--muted);
+    margin: 0 0 1.1rem;
+  }
+ 
+  .modal-summary{
+    font-size: 0.92rem;
+    line-height: 1.6;
+    color: var(--ink-soft);
+    margin: 0 0 1.1rem;
+  }
+ 
+  .modal-avis-label{
+    font-size: 0.72rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--clay-bright);
+    margin: 0 0 0.4rem;
+  }
+ 
+  .modal-text{
+    font-size: 0.98rem;
+    line-height: 1.65;
+    color: var(--ink-soft);
+    margin: 0;
+  }
+  .modal-text.placeholder{ color: var(--dim); font-style: italic; }
+ 
+  footer.colophon{
+    margin-top: 3rem;
+    text-align:center;
+    font-size: 0.78rem;
+    color: var(--dim);
+  }
+</style>
+</head>
+<body>
+ 
+<div class="page">
+  <header class="masthead">
+    <p class="kicker"><a href="atelier.html">Atelier</a> — musées, lecture, musique et cinéma</p>
+    <h1>Littérature</h1>
+    <p class="lede">Une galerie de livres lus, classés par auteur. Touchez une fiche pour l'ouvrir.</p>
+  </header>
+ 
+  <div class="gallery" id="gallery-root"></div>
+ 
+  <footer class="colophon">Une facette de l'Atlas des facettes.</footer>
+</div>
+ 
+<div class="overlay" id="overlay">
+  <div class="modal" id="modal">
+    <button class="modal-close" id="modal-close" aria-label="Fermer">✕</button>
+    <div id="modal-content"></div>
+  </div>
+</div>
+ 
+<script>
+  // Triés par ordre alphabétique du nom d'auteur
+  const BOOKS = [
+    {
+      id: "bronte",
+      auteur: "Emily Brontë",
+      titre: "Les Hauts de Hurle-Vent",
+      genre: "Roman anglais",
+      annee: "1847",
+      resume: "Une passion dévastatrice sur la lande du Yorkshire, entre Heathcliff et Catherine.",
+      avis: "Avis à rédiger."
+    },
+    {
+      id: "dostoievski",
+      auteur: "Fiodor Dostoïevski",
+      titre: "Le Joueur",
+      genre: "Roman russe",
+      annee: "1866",
+      resume: "La roulette, la ruine et l'obsession, dans une station thermale allemande.",
+      avis: "Avis à rédiger."
+    },
+    {
+      id: "hemingway",
+      auteur: "Ernest Hemingway",
+      titre: "Le vieil homme et la mer",
+      genre: "Roman américain",
+      annee: "1952",
+      resume: "Un vieux pêcheur cubain face à un marlin géant, seul au large.",
+      avis: "Avis à rédiger."
+    },
+    {
+      id: "hopkins",
+      auteur: "John Hopkins",
+      titre: "Dans les montagnes chinoises",
+      genre: "Roman américain",
+      annee: "1989",
+      resume: "Malgré le titre, l'action se déroule au Pérou : les Andes, surnommées ainsi car leurs habitants seraient venus d'Asie.",
+      avis: "Avis à rédiger."
+    },
+    {
+      id: "mishima",
+      auteur: "Yukio Mishima",
+      titre: "L'homme rejeté par la mer",
+      genre: "Roman japonais",
+      annee: "1963",
+      resume: "Un marin, un jeune garçon et une mère, entre fascination et cruauté.",
+      avis: "Avis à rédiger."
+    },
+    {
+      id: "tesson-fees",
+      auteur: "Sylvain Tesson",
+      titre: "Avec les fées",
+      genre: "Récit de voyage",
+      annee: "2024",
+      resume: "Trois mois en voilier le long de la façade atlantique, de la Galice à l'Écosse, en quête du merveilleux.",
+      avis: "Avis à rédiger."
+    },
+    {
+      id: "tesson-berezina",
+      auteur: "Sylvain Tesson",
+      titre: "Berezina",
+      genre: "Récit de voyage",
+      annee: "2015",
+      resume: "Refaire en side-car, deux siècles plus tard, la route de la retraite de Russie.",
+      avis: "Avis à rédiger."
+    },
+    {
+      id: "tesson-blanc",
+      auteur: "Sylvain Tesson",
+      titre: "Blanc",
+      genre: "Récit de voyage",
+      annee: "2022",
+      resume: "Quatre hivers pour traverser les Alpes à ski, de Menton à Trieste.",
+      avis: "Avis à rédiger."
+    }
+  ];
+ 
+  const root = document.getElementById('gallery-root');
+  const overlay = document.getElementById('overlay');
+  const modalContent = document.getElementById('modal-content');
+ 
+  function initial(str){ return str.trim().charAt(0).toUpperCase(); }
+ 
+  function renderGallery(){
+    BOOKS.forEach(b => {
+      const card = document.createElement('article');
+      card.className = 'card';
+      card.addEventListener('click', () => openModal(b.id));
+ 
+      const cover = document.createElement('div');
+      cover.className = 'card-cover';
+      cover.textContent = initial(b.titre);
+      card.appendChild(cover);
+ 
+      const body = document.createElement('div');
+      body.className = 'card-body';
+      body.innerHTML =
+        '<p class="card-tag">' + b.auteur + '</p>' +
+        '<h3 class="card-title">' + b.titre + '</h3>' +
+        '<p class="card-terroir">' + b.genre + ', ' + b.annee + '</p>';
+      card.appendChild(body);
+ 
+      root.appendChild(card);
+    });
+  }
+ 
+  function openModal(id){
+    const b = BOOKS.find(x => x.id === id);
+    if (!b) return;
+ 
+    let html = '<div class="modal-cover">' + initial(b.titre) + '</div>';
+    html += '<div class="modal-body">';
+    html += '<p class="modal-breadcrumb">' + b.auteur + ' — ' + b.genre + '</p>';
+    html += '<h2 class="modal-title">' + b.titre + '</h2>';
+    html += '<p class="modal-terroir">' + b.annee + '</p>';
+    html += '<p class="modal-summary">' + b.resume + '</p>';
+    html += '<p class="modal-avis-label">Mon avis</p>';
+    html += '<p class="modal-text ' + (b.avis.includes('à rédiger') ? 'placeholder' : '') + '">' + b.avis + '</p>';
+    html += '</div>';
+ 
+    modalContent.innerHTML = html;
+    overlay.classList.add('open');
+  }
+ 
+  function closeModal(){ overlay.classList.remove('open'); }
+ 
+  document.getElementById('modal-close').addEventListener('click', closeModal);
+  overlay.addEventListener('click', (e) => { if (e.target === overlay) closeModal(); });
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeModal(); });
+ 
+  renderGallery();
+</script>
+ 
+</body>
+</html>
