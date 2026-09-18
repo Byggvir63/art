@@ -308,15 +308,16 @@
 </div>
  
 <script>
+  // Triés par ordre alphabétique du nom de réalisateur
   const FILMS = [
     {
-      id: "odyssee",
-      realisateur: "Christopher Nolan",
-      titre: "L'Odyssée",
-      genre: "Péplum mythologique",
-      annee: "2026",
-      pays: "États-Unis, Royaume-Uni",
-      resume: "L'épopée d'Homère portée à l'écran : le long retour d'Ulysse vers Ithaque, entre dieux, monstres et épreuves.",
+      id: "mage-kremlin",
+      realisateur: "Olivier Assayas",
+      titre: "Le Mage du Kremlin",
+      genre: "Thriller politique",
+      annee: "2025",
+      pays: "France",
+      resume: "Dans les coulisses du pouvoir russe post-URSS, le récit d'un conseiller de l'ombre auprès d'un futur chef d'État.",
       avis: "Avis à rédiger."
     },
     {
@@ -330,73 +331,13 @@
       avis: "Avis à rédiger."
     },
     {
-      id: "etranger",
-      realisateur: "François Ozon",
-      titre: "L'Étranger",
+      id: "train-dreams",
+      realisateur: "Clint Bentley",
+      titre: "Train Dreams",
       genre: "Drame",
       annee: "2025",
-      pays: "France, Belgique",
-      resume: "Adaptation du roman de Camus : Alger, 1938, un employé enterre sa mère sans émotion apparente, avant qu'un engrenage ne se referme sur lui.",
-      avis: "Avis à rédiger."
-    },
-    {
-      id: "rayons-ombres",
-      realisateur: "Xavier Giannoli",
-      titre: "Des Rayons et des ombres",
-      genre: "Drame historique",
-      annee: "2026",
-      pays: "France",
-      resume: "L'histoire vraie de Jean Luchaire, patron de presse collaborationniste, et de sa fille Corinne, pris dans l'engrenage de l'Occupation.",
-      avis: "Avis à rédiger."
-    },
-    {
-      id: "marty-supreme",
-      realisateur: "Josh Safdie",
-      titre: "Marty Supreme",
-      genre: "Biopic, drame",
-      annee: "2026",
       pays: "États-Unis",
-      resume: "New York, 1952 : un jeune vendeur de chaussures rêve de devenir le meilleur pongiste du monde, prêt à tout pour y parvenir.",
-      avis: "Avis à rédiger."
-    },
-    {
-      id: "chant-forets",
-      realisateur: "Vincent Munier",
-      titre: "Le Chant des Forêts",
-      genre: "Documentaire",
-      annee: "2025",
-      pays: "France",
-      resume: "Trois générations, une même forêt : Vincent Munier retourne dans les Vosges avec son père et son fils, sur la trace du grand tétras.",
-      avis: "Avis à rédiger."
-    },
-    {
-      id: "grande-arche",
-      realisateur: "Stéphane Demoustier",
-      titre: "L'Inconnu de la Grande Arche",
-      genre: "Drame biographique",
-      annee: "2025",
-      pays: "France, Danemark",
-      resume: "1983 : un architecte danois méconnu remporte le concours de la Grande Arche de la Défense, et découvre les coulisses du pouvoir.",
-      avis: "Avis à rédiger."
-    },
-    {
-      id: "garcon-heron",
-      realisateur: "Hayao Miyazaki",
-      titre: "Le Garçon et le Héron",
-      genre: "Animation",
-      annee: "2023",
-      pays: "Japon",
-      resume: "Un jeune garçon en deuil suit un héron facétieux jusque dans un monde parallèle peuplé de créatures étranges.",
-      avis: "Avis à rédiger."
-    },
-    {
-      id: "bojarsky",
-      realisateur: "Jean-Paul Salomé",
-      titre: "L'Affaire Bojarsky",
-      genre: "Drame",
-      annee: "2026",
-      pays: "France, Belgique",
-      resume: "Un ingénieur polonais réfugié en France, faussaire par nécessité sous l'Occupation, puis courtisé par le grand banditisme pour ses talents.",
+      resume: "La vie tout entière d'un bûcheron du Nord-Ouest américain, au fil d'une époque en pleine mutation.",
       avis: "Avis à rédiger."
     },
     {
@@ -410,23 +351,13 @@
       avis: "Avis à rédiger."
     },
     {
-      id: "mage-kremlin",
-      realisateur: "Olivier Assayas",
-      titre: "Le Mage du Kremlin",
-      genre: "Thriller politique",
-      annee: "2025",
-      pays: "France",
-      resume: "Dans les coulisses du pouvoir russe post-URSS, le récit d'un conseiller de l'ombre auprès d'un futur chef d'État.",
-      avis: "Avis à rédiger."
-    },
-    {
-      id: "train-dreams",
-      realisateur: "Clint Bentley",
-      titre: "Train Dreams",
-      genre: "Drame",
+      id: "avatar-fire-ash",
+      realisateur: "James Cameron",
+      titre: "Avatar: Fire and Ash",
+      genre: "Science-fiction",
       annee: "2025",
       pays: "États-Unis",
-      resume: "La vie tout entière d'un bûcheron du Nord-Ouest américain, au fil d'une époque en pleine mutation.",
+      resume: "Troisième volet de la saga sur Pandora, suite directe de La Voie de l'eau, pour la famille Sully.",
       avis: "Avis à rédiger."
     },
     {
@@ -440,13 +371,83 @@
       avis: "Avis à rédiger."
     },
     {
-      id: "avatar-fire-ash",
-      realisateur: "James Cameron",
-      titre: "Avatar: Fire and Ash",
-      genre: "Science-fiction",
+      id: "grande-arche",
+      realisateur: "Stéphane Demoustier",
+      titre: "L'Inconnu de la Grande Arche",
+      genre: "Drame biographique",
       annee: "2025",
+      pays: "France, Danemark",
+      resume: "1983 : un architecte danois méconnu remporte le concours de la Grande Arche de la Défense, et découvre les coulisses du pouvoir.",
+      avis: "Avis à rédiger."
+    },
+    {
+      id: "rayons-ombres",
+      realisateur: "Xavier Giannoli",
+      titre: "Des Rayons et des ombres",
+      genre: "Drame historique",
+      annee: "2026",
+      pays: "France",
+      resume: "L'histoire vraie de Jean Luchaire, patron de presse collaborationniste, et de sa fille Corinne, pris dans l'engrenage de l'Occupation.",
+      avis: "Avis à rédiger."
+    },
+    {
+      id: "garcon-heron",
+      realisateur: "Hayao Miyazaki",
+      titre: "Le Garçon et le Héron",
+      genre: "Animation",
+      annee: "2023",
+      pays: "Japon",
+      resume: "Un jeune garçon en deuil suit un héron facétieux jusque dans un monde parallèle peuplé de créatures étranges.",
+      avis: "Avis à rédiger."
+    },
+    {
+      id: "chant-forets",
+      realisateur: "Vincent Munier",
+      titre: "Le Chant des Forêts",
+      genre: "Documentaire",
+      annee: "2025",
+      pays: "France",
+      resume: "Trois générations, une même forêt : Vincent Munier retourne dans les Vosges avec son père et son fils, sur la trace du grand tétras.",
+      avis: "Avis à rédiger."
+    },
+    {
+      id: "odyssee",
+      realisateur: "Christopher Nolan",
+      titre: "L'Odyssée",
+      genre: "Péplum mythologique",
+      annee: "2026",
+      pays: "États-Unis, Royaume-Uni",
+      resume: "L'épopée d'Homère portée à l'écran : le long retour d'Ulysse vers Ithaque, entre dieux, monstres et épreuves.",
+      avis: "Avis à rédiger."
+    },
+    {
+      id: "etranger",
+      realisateur: "François Ozon",
+      titre: "L'Étranger",
+      genre: "Drame",
+      annee: "2025",
+      pays: "France, Belgique",
+      resume: "Adaptation du roman de Camus : Alger, 1938, un employé enterre sa mère sans émotion apparente, avant qu'un engrenage ne se referme sur lui.",
+      avis: "Avis à rédiger."
+    },
+    {
+      id: "marty-supreme",
+      realisateur: "Josh Safdie",
+      titre: "Marty Supreme",
+      genre: "Biopic, drame",
+      annee: "2026",
       pays: "États-Unis",
-      resume: "Troisième volet de la saga sur Pandora, suite directe de La Voie de l'eau, pour la famille Sully.",
+      resume: "New York, 1952 : un jeune vendeur de chaussures rêve de devenir le meilleur pongiste du monde, prêt à tout pour y parvenir.",
+      avis: "Avis à rédiger."
+    },
+    {
+      id: "bojarsky",
+      realisateur: "Jean-Paul Salomé",
+      titre: "L'Affaire Bojarsky",
+      genre: "Drame",
+      annee: "2026",
+      pays: "France, Belgique",
+      resume: "Un ingénieur polonais réfugié en France, faussaire par nécessité sous l'Occupation, puis courtisé par le grand banditisme pour ses talents.",
       avis: "Avis à rédiger."
     }
   ];
