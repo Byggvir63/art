@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cinéma — Atelier</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,500&family=Work+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #1B1512;
+    --panel: #241C17;
+    --panel-raised: #2E241D;
+    --ink: #F0E6D8;
+    --ink-soft: #D6C4AC;
+    --clay: #B5764A;
+    --clay-bright: #D99B6E;
+    --muted: #8C7458;
+    --rule: rgba(181,118,74,0.28);
+    --dim: #5C4E40;
+    --sage: #7E9C6E;
+    --radius: 10px;
+    --shadow: 0 14px 34px rgba(10,6,4,0.45);
+    --font-display: 'Cormorant Garamond', serif;
+    --font-body: 'Work Sans', sans-serif;
+  }
+ 
+  *{ box-sizing: border-box; }
+ 
+  html,body{
+    margin:0;
+    padding:0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--font-body);
+    -webkit-font-smoothing: antialiased;
+  }
+ 
+  body{
+    min-height:100vh;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    padding: clamp(2.5rem, 6vw, 5rem) clamp(1.25rem, 4vw, 2rem);
+  }
+ 
+  a{ color: inherit; }
+ 
+  .page{ width: 100%; max-width: 1080px; }
+ 
+  header.masthead{
+    text-align:center;
+    margin-bottom: clamp(2rem, 5vw, 3rem);
+  }
+ 
+  .kicker{
+    font-size: 0.8rem;
+    letter-spacing: 0.04em;
+    color: var(--muted);
+    margin: 0 0 0.6rem;
+  }
+  .kicker a{
+    text-decoration: none;
+    border-bottom: 1px solid rgba(140,116,88,0.4);
+  }
+  .kicker a:hover{ color: var(--clay-bright); border-bottom-color: var(--clay-bright); }
+ 
+  h1{
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: clamp(2.2rem, 5.2vw, 3.1rem);
+    margin: 0 0 0.9rem;
+    color: var(--ink);
+  }
+ 
+  .lede{
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 1.08rem;
+    color: var(--ink-soft);
+    max-width: 52ch;
+    margin: 0 auto;
+    line-height: 1.55;
+  }
+ 
+  .gallery{
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1.1rem;
+    margin-top: 2.2rem;
+  }
+ 
+  .card{
+    background: var(--panel);
+    border: 1px solid var(--rule);
+    border-radius: var(--radius);
+    overflow: hidden;
+    cursor: pointer;
+    transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+    display: flex;
+    flex-direction: column;
+  }
+  .card:hover{
+    transform: translateY(-3px);
+    box-shadow: var(--shadow);
+    border-color: rgba(217,155,110,0.55);
+  }
+ 
+  .card-cover{
+    width: 100%;
+    aspect-ratio: 2 / 3;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 2.6rem;
+    color: var(--dim);
+    background:
+      repeating-linear-gradient(135deg, var(--panel-raised), var(--panel-raised) 10px, var(--panel) 10px, var(--panel) 20px);
+  }
+ 
+  .card-body{ padding: 0.85rem 1rem 1rem; }
+ 
+  .card-tag{
+    font-size: 0.65rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--sage);
+    margin: 0 0 0.25rem;
+  }
+ 
+  .card-title{
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 1.15rem;
+    margin: 0 0 0.2rem;
+    color: var(--ink);
+    line-height: 1.25;
+  }
+ 
+  .card-terroir{
+    font-size: 0.78rem;
+    font-style: italic;
+    color: var(--muted);
+    margin: 0;
+  }
+ 
+  /* --- Modal --- */
+  .overlay{
+    position: fixed;
+    inset: 0;
+    background: rgba(10,6,4,0.78);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem 1rem;
+    z-index: 999;
+  }
+  .overlay.open{ display: flex; }
+ 
+  .modal{
+    position: relative;
+    width: 100%;
+    max-width: 560px;
+    max-height: 86vh;
+    overflow-y: auto;
+    background: var(--panel);
+    border: 1px solid var(--rule);
+    border-radius: 14px;
+    box-shadow: var(--shadow);
+  }
+ 
+  .modal-close{
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: rgba(0,0,0,0.4);
+    color: var(--ink);
+    border: none;
+    font-size: 1.1rem;
+    line-height: 1;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.15s ease, color 0.15s ease;
+    z-index: 2;
+  }
+  .modal-close:hover{ background: var(--clay-bright); color: var(--bg); }
+ 
+  .modal-cover{
+    height: 180px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 3.4rem;
+    color: var(--dim);
+    background:
+      repeating-linear-gradient(135deg, var(--panel-raised), var(--panel-raised) 12px, var(--panel) 12px, var(--panel) 24px);
+  }
+ 
+  .modal-body{ padding: 1.6rem 1.8rem 2rem; }
+ 
+  .modal-breadcrumb{
+    font-size: 0.75rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--sage);
+    margin: 0 0 0.5rem;
+  }
+ 
+  .modal-title{
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 1.8rem;
+    margin: 0 0 0.4rem;
+    color: var(--ink);
+  }
+ 
+  .modal-terroir{
+    font-size: 0.9rem;
+    font-style: italic;
+    color: var(--muted);
+    margin: 0 0 1.1rem;
+  }
+ 
+  .modal-summary{
+    font-size: 0.92rem;
+    line-height: 1.6;
+    color: var(--ink-soft);
+    margin: 0 0 1.1rem;
+  }
+ 
+  .modal-avis-label{
+    font-size: 0.72rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--clay-bright);
+    margin: 0 0 0.4rem;
+  }
+ 
+  .modal-text{
+    font-size: 0.98rem;
+    line-height: 1.65;
+    color: var(--ink-soft);
+    margin: 0;
+  }
+  .modal-text.placeholder{ color: var(--dim); font-style: italic; }
+ 
+  footer.colophon{
+    margin-top: 3rem;
+    text-align:center;
+    font-size: 0.78rem;
+    color: var(--dim);
+  }
+ 
+  .footer-links{
+    margin-top: 0.6rem;
+    display:flex;
+    justify-content:center;
+    gap: 1.1rem;
+    flex-wrap: wrap;
+  }
+  .footer-links a{
+    color: var(--clay-bright);
+    text-decoration: none;
+    border-bottom: 1px solid transparent;
+    padding-bottom: 1px;
+    transition: border-color 0.2s ease;
+  }
+  .footer-links a:hover, .footer-links a:focus{
+    border-bottom-color: var(--clay-bright);
+  }
+</style>
+</head>
+<body>
+ 
+<div class="page">
+  <header class="masthead">
+    <p class="kicker"><a href="art.html">Atelier</a> — musées, lecture, musique et cinéma</p>
+    <h1>Cinéma</h1>
+    <p class="lede">Une galerie de films vus, avec mon avis sur chacun. Touchez une fiche pour l'ouvrir.</p>
+  </header>
+ 
+  <div class="gallery" id="gallery-root"></div>
+ 
+  <footer class="colophon">
+    Une facette de l'Atlas des facettes.
+    <div class="footer-links">
+      <a href="https://boxd.it/gxhvB" data-site="letterboxd">Letterboxd</a>
+      <a href="https://www.babelio.com/monprofil.php?id_user=2411726" data-site="babelio">Babelio</a>
+    </div>
+  </footer>
+</div>
+ 
+<div class="overlay" id="overlay">
+  <div class="modal" id="modal">
+    <button class="modal-close" id="modal-close" aria-label="Fermer">✕</button>
+    <div id="modal-content"></div>
+  </div>
+</div>
+ 
+<script>
+  const FILMS = [
+    {
+      id: "odyssee",
+      realisateur: "Christopher Nolan",
+      titre: "L'Odyssée",
+      genre: "Péplum mythologique",
+      annee: "2026",
+      pays: "États-Unis, Royaume-Uni",
+      resume: "L'épopée d'Homère portée à l'écran : le long retour d'Ulysse vers Ithaque, entre dieux, monstres et épreuves.",
+      avis: "Avis à rédiger."
+    },
+    {
+      id: "de-gaulle",
+      realisateur: "Antonin Baudry",
+      titre: "De Gaulle : Liberté et Résistance",
+      genre: "Drame historique (diptyque)",
+      annee: "2026",
+      pays: "France, Belgique",
+      resume: "Juin 1940 : un général alors inconnu refuse la défaite et rejoint Londres pour organiser la France libre.",
+      avis: "Avis à rédiger."
+    },
+    {
+      id: "etranger",
+      realisateur: "François Ozon",
+      titre: "L'Étranger",
+      genre: "Drame",
+      annee: "2025",
+      pays: "France, Belgique",
+      resume: "Adaptation du roman de Camus : Alger, 1938, un employé enterre sa mère sans émotion apparente, avant qu'un engrenage ne se referme sur lui.",
+      avis: "Avis à rédiger."
+    },
+    {
+      id: "rayons-ombres",
+      realisateur: "Xavier Giannoli",
+      titre: "Des Rayons et des ombres",
+      genre: "Drame historique",
+      annee: "2026",
+      pays: "France",
+      resume: "L'histoire vraie de Jean Luchaire, patron de presse collaborationniste, et de sa fille Corinne, pris dans l'engrenage de l'Occupation.",
+      avis: "Avis à rédiger."
+    },
+    {
+      id: "marty-supreme",
+      realisateur: "Josh Safdie",
+      titre: "Marty Supreme",
+      genre: "Biopic, drame",
+      annee: "2026",
+      pays: "États-Unis",
+      resume: "New York, 1952 : un jeune vendeur de chaussures rêve de devenir le meilleur pongiste du monde, prêt à tout pour y parvenir.",
+      avis: "Avis à rédiger."
+    },
+    {
+      id: "chant-forets",
+      realisateur: "Vincent Munier",
+      titre: "Le Chant des Forêts",
+      genre: "Documentaire",
+      annee: "2025",
+      pays: "France",
+      resume: "Trois générations, une même forêt : Vincent Munier retourne dans les Vosges avec son père et son fils, sur la trace du grand tétras.",
+      avis: "Avis à rédiger."
+    },
+    {
+      id: "grande-arche",
+      realisateur: "Stéphane Demoustier",
+      titre: "L'Inconnu de la Grande Arche",
+      genre: "Drame biographique",
+      annee: "2025",
+      pays: "France, Danemark",
+      resume: "1983 : un architecte danois méconnu remporte le concours de la Grande Arche de la Défense, et découvre les coulisses du pouvoir.",
+      avis: "Avis à rédiger."
+    },
+    {
+      id: "garcon-heron",
+      realisateur: "Hayao Miyazaki",
+      titre: "Le Garçon et le Héron",
+      genre: "Animation",
+      annee: "2023",
+      pays: "Japon",
+      resume: "Un jeune garçon en deuil suit un héron facétieux jusque dans un monde parallèle peuplé de créatures étranges.",
+      avis: "Avis à rédiger."
+    },
+    {
+      id: "bojarsky",
+      realisateur: "Jean-Paul Salomé",
+      titre: "L'Affaire Bojarsky",
+      genre: "Drame",
+      annee: "2026",
+      pays: "France, Belgique",
+      resume: "Un ingénieur polonais réfugié en France, faussaire par nécessité sous l'Occupation, puis courtisé par le grand banditisme pour ses talents.",
+      avis: "Avis à rédiger."
+    },
+    {
+      id: "parasite",
+      realisateur: "Bong Joon-ho",
+      titre: "Parasite",
+      genre: "Thriller social",
+      annee: "2019",
+      pays: "Corée du Sud",
+      resume: "Une famille modeste s'infiltre peu à peu au service d'une famille aisée, jusqu'à ce que la mécanique se grippe.",
+      avis: "Avis à rédiger."
+    },
+    {
+      id: "mage-kremlin",
+      realisateur: "Olivier Assayas",
+      titre: "Le Mage du Kremlin",
+      genre: "Thriller politique",
+      annee: "2025",
+      pays: "France",
+      resume: "Dans les coulisses du pouvoir russe post-URSS, le récit d'un conseiller de l'ombre auprès d'un futur chef d'État.",
+      avis: "Avis à rédiger."
+    },
+    {
+      id: "train-dreams",
+      realisateur: "Clint Bentley",
+      titre: "Train Dreams",
+      genre: "Drame",
+      annee: "2025",
+      pays: "États-Unis",
+      resume: "La vie tout entière d'un bûcheron du Nord-Ouest américain, au fil d'une époque en pleine mutation.",
+      avis: "Avis à rédiger."
+    },
+    {
+      id: "frankenstein",
+      realisateur: "Guillermo del Toro",
+      titre: "Frankenstein",
+      genre: "Fantastique gothique",
+      annee: "2025",
+      pays: "États-Unis",
+      resume: "Relecture du roman de Mary Shelley : un savant orgueilleux et sa créature, entre ambition démesurée et tragédie.",
+      avis: "Avis à rédiger."
+    },
+    {
+      id: "avatar-fire-ash",
+      realisateur: "James Cameron",
+      titre: "Avatar: Fire and Ash",
+      genre: "Science-fiction",
+      annee: "2025",
+      pays: "États-Unis",
+      resume: "Troisième volet de la saga sur Pandora, suite directe de La Voie de l'eau, pour la famille Sully.",
+      avis: "Avis à rédiger."
+    }
+  ];
+ 
+  const root = document.getElementById('gallery-root');
+  const overlay = document.getElementById('overlay');
+  const modalContent = document.getElementById('modal-content');
+ 
+  function initial(str){ return str.trim().charAt(0).toUpperCase(); }
+ 
+  function renderGallery(){
+    FILMS.forEach(f => {
+      const card = document.createElement('article');
+      card.className = 'card';
+      card.addEventListener('click', () => openModal(f.id));
+ 
+      const cover = document.createElement('div');
+      cover.className = 'card-cover';
+      cover.textContent = initial(f.titre);
+      card.appendChild(cover);
+ 
+      const body = document.createElement('div');
+      body.className = 'card-body';
+      body.innerHTML =
+        '<p class="card-tag">' + f.realisateur + '</p>' +
+        '<h3 class="card-title">' + f.titre + '</h3>' +
+        '<p class="card-terroir">' + f.genre + ', ' + f.annee + '</p>';
+      card.appendChild(body);
+ 
+      root.appendChild(card);
+    });
+  }
+ 
+  function openModal(id){
+    const f = FILMS.find(x => x.id === id);
+    if (!f) return;
+ 
+    let html = '<div class="modal-cover">' + initial(f.titre) + '</div>';
+    html += '<div class="modal-body">';
+    html += '<p class="modal-breadcrumb">' + f.realisateur + ' — ' + f.genre + '</p>';
+    html += '<h2 class="modal-title">' + f.titre + '</h2>';
+    html += '<p class="modal-terroir">' + f.annee + ' — ' + f.pays + '</p>';
+    html += '<p class="modal-summary">' + f.resume + '</p>';
+    html += '<p class="modal-avis-label">Mon avis</p>';
+    html += '<p class="modal-text ' + (f.avis.includes('à rédiger') ? 'placeholder' : '') + '">' + f.avis + '</p>';
+    html += '</div>';
+ 
+    modalContent.innerHTML = html;
+    overlay.classList.add('open');
+  }
+ 
+  function closeModal(){ overlay.classList.remove('open'); }
+ 
+  document.getElementById('modal-close').addEventListener('click', closeModal);
+  overlay.addEventListener('click', (e) => { if (e.target === overlay) closeModal(); });
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeModal(); });
+ 
+  renderGallery();
+</script>
+ 
+</body>
+</html>
